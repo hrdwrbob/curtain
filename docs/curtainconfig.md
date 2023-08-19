@@ -6,6 +6,16 @@ Device setup:
   * hardware list (by grouping because pro audio)-> button to 'add as PJ device'
 
 
+PLumb Sink (optional Context: Pressing Basket -> selected Plumb Source)
+ - standard actions:
+  - solo (disconnect all other sinks from source)
+  - mute (mute - if in context mute src-sink level control)
+  - level (change level - if in context, insert a level control filter src-sink and adjust that)
+  - sel (un/link src-sink toggle if in context)
+  - rec (Cycle through filters and show controls?)
+Plumb Source (optional Context: Plumb Sink) 
+
+
 base controls (comes from what is being controlled):
 
 Note controls are grouped, and ordered, so that they populate in the same way all the time.
