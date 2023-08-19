@@ -48,6 +48,7 @@ Easy and obvious defaults and setup - completely flexible configuration when goi
 
 * Plumb (audio source/sink/both)
 * PlumbFilter 
+* PlumbGroup
 * PlumbMeter
 * PlumbRunner (Main object that does stuff)
 * 
@@ -56,11 +57,14 @@ PlumbSource.filters().jam(newfilter)
 PlumbSource.filters(PlumbSink).jam(newfilter) is the same as PlumbSink.filters(PlumbSource).jam(newfilter)
 PlumbJammer.Plumb()
 
+## PlumbGroup
+A PlumbGroup is a selection of Plumbs that can natively route to each other. If You are only using it locally and everything is on pipewire, everything will be in one group. If you are using voicemeeter on windows connected to pipewire, you will have two groups. This can also be used for hinting by Curtain to roll up a group, depending on context.
 
 
 ## Plumb
 
 ### Core
+
 
 
 Other options:
