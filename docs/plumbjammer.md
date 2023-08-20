@@ -52,14 +52,12 @@ Easy and obvious defaults and setup - completely flexible configuration when goi
 
 * Plumb (audio source/sink/both)
 * PlumbFilter 
+* PlumbFilterChain
 * PlumbGroup
 * PlumbMeter
 * PlumbRunner (Main object that does stuff)
 
-PlumbSource.jam(PlumbSink)
-PlumbSource.filters().jam(newfilter)
-PlumbSource.filters(PlumbSink).jam(newfilter) is the same as PlumbSink.filters(PlumbSource).jam(newfilter)
-PlumbJammer.Plumb()
+
 
 
 
@@ -68,12 +66,25 @@ PlumbJammer.Plumb()
 ### Core
 **Properties**
 
+* uuid
 * Name
 * frequency (if not all channels are the same is 0)
 * bits (as above)
 * channels
-* layout
+* layout - stereo,headphones,5.1 rear, 5.1 side, 2.1, 4.1, 7.1 (configurable)
+* direction - sink/source/birectional
+* group1
+* supported_connections (eg vban, )
 
+
+**functions**
+* jam (item)
+    connect to plumb. If both are bidirectional, this is the source
+    if configured, may automatically create a network connection to complete the jam.
+* filters(direction) returns a filterchain.
+* filters(plumb) returns a tuple of three filterchains, src, src-dest, and dest.
+* meter() - returns a list of meters connected to this plumb
+* meter(PlumbMeter) - adds a meter to the plumb.
 
 ### Application Plumb
 Application Sources:
@@ -83,6 +94,7 @@ They can be delisted (if inactive), and removed if required.
 Can be assigned filters and routed the same as any other source. Filters will remain while the item is active, but will be removed if it times out.
 
 * Communication sources - messenger, teams, zoom, webex,bluetooth phone, soft phone, whatever.
+ * greylist - list of sources not to show by default (eg system sounds) 
 
 
 ### "Device" Plumb
@@ -91,7 +103,6 @@ Device types:
   * Library of filter suggestions/settings for devices.
 
 Sinks:
-* Are ordered - this is how they display on screen and for devices.
 * have names
 * have a channel layout
 * Have types (which do hinting for auto filters)
@@ -110,21 +121,58 @@ A PlumbGroup is a selection of Plumbs that can natively route to each other. If 
 
 Plumbs within a Plumbgroup have an order (two - one for in, one for out) -  this is managed by the wizard using rules.
 
-## PlumbFilter
+## PlumbFilterChain
+Chain of filters that apply to a plumb (or plumb pair) 
+**properties**
+* plumb  (either a plumb or plumb tuple)
+* filters
+**functions**
+* jam(position,filter)
+* move(filter,position)
 
+## PlumbFilter
  * Entirely on demand. Created on the fly so you can have more/less. (could be pre-loaded for effeciency, but are used in a 1-for-1 way)
  * can be added to src chain, src-sink chain, or sink chain (chains are ordered)
   * if a filter is added to any of these chains, the settings are saved for that chain (which means auto filter changes are saved per 
- * greylist - list of sources not to show by default (eg system sounds) 
+
+
+
+**properties**
+* filter_group
+* controls - dict with controls and types. TBD
+* custom_details - dict that details any custom metrics
+* filter (the actual filter type)
+**status**
+* controlvalues
+**metrics**
+* latency
+* CPU usage
+* custom_metrics
+**functions**
+* jam
+* move
+* set_control
+
 
 
 ## PlumbMeter:
-* attached to a plumb in a direction.
+* Effectively a PlumbFilter, but not in line.
 
- * Possibly latency on all filters?
-* CPU/RAM usage
- * Process list (of just filters and source/sinks)
-* Sync Errors?
+**properties**
+* controls - dict with controls and types. TBD
+* custom_details - dict that details any custom metrics
+* meter (the actual meter type)
+**status**
+* controlvalues
+**metrics**
+* latency
+* CPU usage
+* custom_metrics
+**functions**
+* jam
+* move
+* set_control
+
 
 ## Wizard Rules
 * Auto filters (if engaged, adds filter to src-sink filter chain at the end, tagged as auto, and removed if disconnected)
